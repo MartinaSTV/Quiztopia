@@ -12,8 +12,11 @@ button{
   border-radius: 3px;
   box-shadow: 1px 1px $lightGrey ;
   border: none;
+  max-width: 9rem;
 }
 button:hover{
   font-weight: bold;
-
+}
+.map-container {
+	height: 300px;
 }

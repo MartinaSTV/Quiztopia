@@ -5,15 +5,23 @@ import './LogIn.scss'
 
 const LogIn = ()=>{
 
-    let [username, setUsername]= useState<string>('');
-    let [password, setpassword]= useState<string>('');
+    const [username, setUsername]= useState<string>('');
+    const [password, setpassword]= useState<string>('');
+    const [message, setMessage]= useState<string>('')
 
     const navigate = useNavigate()
 
    const logInExisitingAccont = async()=>{
+    try{
       await LogInExisitingAccont( username, password);
-      navigate('/CreateQuiz')
       
+    }catch(error){
+        setMessage('Kunde inte logga in');
+    }
+    const token: string = JSON.parse(localStorage.getItem('token') || '')
+    if( token === ''){  setMessage('Kunde inte logga in'); }
+    else{ navigate('/CreateQuiz');
+    }
    }
 
     return(
@@ -22,6 +30,8 @@ const LogIn = ()=>{
             <input className='logIn__input' type="text" placeholder='Username' value={ username } onChange={ (e)=>{ setUsername(e.target.value)}} />
             <input className='logIn__input' type="text" placeholder='password' value={ password } onChange={ (e)=>{ setpassword(e.target.value)}}/>
             <button onClick={ logInExisitingAccont }>Logga in</button>
+            <p>{message}</p>
+            
         </section>
     )
 }

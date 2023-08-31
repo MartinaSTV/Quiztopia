@@ -9,7 +9,7 @@ const LoggedOut = ()=>{
     }
 
     return(
-        <section>
+        <section className='loggedOut'>
             <p>Du är utloggad</p>
             <button onClick={ navigateToLogIn }>Logga in igen</button>
         </section>

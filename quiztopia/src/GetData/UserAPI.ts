@@ -10,12 +10,6 @@ const createAccount = async( username:string, password: string)=>{
     const response = await fetch(url, setings )
     const data: DataResponseCreateAccount = await response.json()
     console.log(data)
-
-    try{
-
-    }catch(error){
-        console.log(error,'error')
-    }
 }
 
 const LogInExisitingAccont = async(password:string, username:string)=>{
@@ -28,10 +22,8 @@ const LogInExisitingAccont = async(password:string, username:string)=>{
     }
     const response = await fetch(url, setings )
     const data: DataResponseLoggedIn = await response.json()
-    console.log(data)
     if (data.token){  localStorage.setItem('token', JSON.stringify(data.token))}else{
         console.log('du är inte inlogad')
-
     }
 }
 
