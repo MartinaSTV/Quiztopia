@@ -25,7 +25,7 @@ interface QuizResponseQuestions{
     answer: string
     location: {
         latitude: number
-        longituder: number
+        longitude: number
     }
     question: string
 }

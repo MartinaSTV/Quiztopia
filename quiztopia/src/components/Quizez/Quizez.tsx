@@ -1,14 +1,11 @@
 import { useState }from 'react'
-import { createQuiz, getQuizes, AddQuestionOnQuiz } from '../../GetData/QuizAPI'
-import Quiz from '../Quiz'
+import { createQuiz, AddQuestionOnQuiz } from '../../GetData/QuizAPI'
+import PlayGame from '../../Views/PlayGame'
 import './Quiz.scss'
 
 const Quizez = ()=>{
 
     const [quizName, setQuizName] = useState<string>('')
-
-    //const [getQuiz, setGetQuiz] = useState<QuizesResponse[] | []>([])
-
     const[ quizQuestion , setQuizQuestion ] = useState<string>('')
     const [quizAnswear, setQuizAnswear] = useState<string>('')
 
@@ -19,14 +16,6 @@ const Quizez = ()=>{
             console.log(error,'inget API svar')
         }
     }
-
-    /* const ShowQuizes = async ()=>{
-        await getQuizes( setGetQuiz )
-      }
-
-    const QuizElem = getQuiz.map((quiz)=>{
-       return <Quiz quiz = { quiz } key={ quiz.userId}/>
-    }) */
 
     const CreateQuizQuestion = ()=>{
         AddQuestionOnQuiz( quizQuestion, quizAnswear )
@@ -47,6 +36,9 @@ const Quizez = ()=>{
                 <label htmlFor=""></label>
                 <input type="text" placeholder='Skriv in svar på fråga' value={ quizAnswear } onChange = { (e)=>{ setQuizAnswear(e.target.value )} } />
                  <button onClick={ CreateQuizQuestion }>Lägg till Quiz</button>
+            </article>
+            <article>
+                <PlayGame/>
             </article>
         </section>
 
