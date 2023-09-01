@@ -31,7 +31,6 @@ const LogIn = ()=>{
             <input className='logIn__input' type="text" placeholder='password' value={ password } onChange={ (e)=>{ setpassword(e.target.value)}}/>
             <button onClick={ logInExisitingAccont }>Logga in</button>
             <p>{message}</p>
-            
         </section>
     )
 }

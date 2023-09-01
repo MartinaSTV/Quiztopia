@@ -1,4 +1,4 @@
-.quiz{
+.quizez{
     display: flex;
     flex-direction: column;
 
@@ -14,11 +14,14 @@
         margin: 0.5rem;
         padding: 0.5rem;
     }
-    &__map{
-        padding: 1rem;
+    &__NewQuiz{
+       background-color: rgb(108, 199, 199);
+       margin-left: auto;
+       margin-right: 1rem;
     }
-    &__quizElem{
+    &__quizQuestions{
         display: flex;
-        padding: 1rem;
+        flex-direction: column;
+        align-items: center;
     }
 }

@@ -37,10 +37,11 @@ const getQuizes =  async( setGetQuiz: SaveResponseQuizes )=>{
     }
 }
 
-const AddQuestionOnQuiz = async(quizQuestion, quizAnswear)=>{
+const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string)=>{
 
     const quizId = localStorage.getItem('quizId')
     const longitude = localStorage.getItem('longitude')
+    console.log(longitude,'longitue skickat till APIt')
     const latitude = localStorage.getItem('latitude')
     console.log(typeof(latitude))
     console.log(quizId)
