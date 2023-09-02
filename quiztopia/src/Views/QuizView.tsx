@@ -4,10 +4,12 @@ import './QuizView.scss'
 
 const QuizView = ()=>{
 
+      const token: string | null = localStorage.getItem('token')
+
         return(
           <section>
-                <article><LoggedIn/></article>
-                <article><Quizez/></article>
+                {token === null? <p>Du måste logga in</p> : <article><LoggedIn/></article>}
+               { token === null ? '' : <article><Quizez/></article>}
           </section>
     )
 }

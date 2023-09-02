@@ -9,28 +9,22 @@ import mapboxgl, { LngLat, Map as MapGl }from 'mapbox-gl';
 import './QuizView.scss'
 mapboxgl.accessToken = import.meta.env.VITE_MAP_KEY as string
 
-const PlayGame = ()=>{
-    const navigate = useNavigate()
-    const [getQuiz, setGetQuiz] = useState<QuizesResponse[] | []>([])
-    const [selectedQuestions, setSelectedQuestions] = useState<QuizResponseQuestions[]>([])
+interface PropsSetlingSetlat{
+    setlngToQuestion: React.Dispatch<React.SetStateAction<number>>
+    setlatToQuestion:  React.Dispatch<React.SetStateAction<number>>
+}
 
-    const token = localStorage.getItem('token')
-    if(token === ''){ navigate('/LoggedOut')}
+const PlayGame = ({ setlngToQuestion, setlatToQuestion }: PropsSetlingSetlat)=>{
+    const navigate = useNavigate()
+    const [quizesResponse, setGetQuiz] = useState<QuizesResponse[] | []>([])
+    const [selectedQuestions, setSelectedQuestions] = useState<QuizResponseQuestions[]>([])
 
     const mapContainer = useRef(null)
     const mapGL = useRef<MapGl | null>(null)
     //visar cordinater på karta från geolocation
     const [lng, setlng ]= useState<number>(11.9875166)
     const [lat, setlat ]= useState<number>(57.7084641)
-    console.log(lng ,lat ,'dessa lordinater till map')
     const [zoom, setzoom ]= useState<number>(10)
- 
-    // skicka till apit för att lägga kordinationer till fråga
-    const [latToQuestion, setlatToQuestion] = useState<number>()
-    const [lngToQuestion, setlngToQuestion] = useState<number>()
-    console.log(latToQuestion,'lat to guestion usetstate')
-    localStorage.setItem('latitude', JSON.stringify(latToQuestion))
-    localStorage.setItem('longitude',JSON.stringify(lngToQuestion))
 
     useEffect(()=>{
 
@@ -39,10 +33,10 @@ const PlayGame = ()=>{
         if(mapGL.current || !mapContainer.current) return
   
         mapGL.current = new MapGl({
-          container: mapContainer.current, // container ID
-          style: 'mapbox://styles/mapbox/streets-v12', // style URL
-          center: [lng, lat], // starting position [lng, lat]
-          zoom: 9, // starting zoom
+          container: mapContainer.current, 
+          style: 'mapbox://styles/mapbox/streets-v12', 
+          center: [lng, lat],
+          zoom: 9,
           });
 
           const map: MapGl = mapGL.current
@@ -55,34 +49,34 @@ const PlayGame = ()=>{
           map.on('click',(e)=>{
             console.log(e)
             
-            const markerlocation =  new mapboxgl.Marker({color:'#006985', draggable:true})
+            const markerlocation =  new mapboxgl.Marker({color:'#006985'})
             markerlocation.setLngLat([e.lngLat.lng, e.lngLat.lat])
             .addTo(map);
 
             const lngLat = markerlocation.getLngLat()
-            console.log(lngLat.lat,'markerslocaton')
             setlatToQuestion(lngLat.lat)
             setlngToQuestion(lngLat.lng)
 
            // vid knapp trycket skicka fråga quizez createquiz
-            //const remove = markerlocation.remove(mapGL.current)
+           // if(removeQuestionMark === false){ markerlocation.remove(mapGL.current) }
+          
+        
            
           })
 
       },[lat, lng, zoom])
 
-
       const getPositionCordinate = async ()=>{
         try{   
         let positionGeo: PositionGeolocation  = await geolocation()
-        console.log(positionGeo.latitude,'posiyion KARTA', positionGeo.longitude)
         setlat(positionGeo.latitude)
         setlng(positionGeo.longitude)
 
         if(mapGL.current === null) {
             //Skriv ut att din position kan inte hittas
+            console.log(' tillåt din position för att använda app ')
        } else{ 
-        const markerUserPosition =  new mapboxgl.Marker({color:'#FF69B4', draggable:true})
+        const markerUserPosition =  new mapboxgl.Marker({color:'#FF69B4'})
         markerUserPosition.setLngLat([positionGeo.longitude, positionGeo.latitude])
         markerUserPosition.setPopup(new mapboxgl.Popup().setHTML("<h1>Du är här</h1>"))
         .addTo(mapGL.current);
@@ -105,15 +99,17 @@ const PlayGame = ()=>{
           setSelectedQuestions(questions)
       }
       
-    const QuizElem = getQuiz.map((quiz, index)=>{
-       return <Quiz quiz = { quiz } showQuestions={ showQuestionsOnMap } key={ index }/>
+    const QuizElem = quizesResponse.map((quiz, index)=>{
+       return <Quiz quiz = { quiz } showQuestions = { showQuestionsOnMap } key = { index }/>
     }) 
 
     useEffect(() => {
         console.log('selectdQuestions är: ', selectedQuestions); 
 
         selectedQuestions.forEach(question => {
-            if( question.location.latitude ==='undefined' || question.location.longitude === 'undefined') return
+            if( question.location.latitude ==='undefined' || question.location.longitude === 'undefined' ) return 
+            if( question.location.latitude > 90 && question.location.latitude <-90  || question.location.longitude > 90 && question.location.longitude < -90) return 
+
             if(mapGL.current === null) return
             const markerlocation =  new mapboxgl.Marker({color:'#d6bd8b'})
             console.log('Location: ', question.location, typeof(question.location.longitude))

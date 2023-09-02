@@ -15,7 +15,10 @@ const createQuiz = async(quizName:string)=>{
     console.log(data)
     let quizId = data.quizId
 
-    localStorage.setItem('quizId',(quizId))
+    if(data.quizId === undefined){
+        console.log('nu är quizId undefined')
+    }
+    localStorage.setItem('quizId',(quizId)) 
    
     if(data.succes === false){
         console.log('du måste logga in igen, din session har gått ut')
@@ -32,18 +35,18 @@ const getQuizes =  async( setGetQuiz: SaveResponseQuizes )=>{
     const response = await fetch(url, setings )
     const data: ResponseGetQuizes = await response.json()
     console.log(data)
+    
     if(data.quizzes){
         setGetQuiz(data.quizzes)
     }
 }
 
-const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string)=>{
+const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:number, lat:number)=>{
 
+    const longitude = lon.toString()
+    const latitude = lat.toString()
+    console.log(lat, lon, 'api')
     const quizId = localStorage.getItem('quizId')
-    const longitude = localStorage.getItem('longitude')
-    console.log(longitude,'longitue skickat till APIt')
-    const latitude = localStorage.getItem('latitude')
-    console.log(typeof(latitude))
     console.log(quizId)
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/question' 
@@ -60,17 +63,26 @@ const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string)=>{
     const setings = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',
-         Authorization: `Bearer ${token}` },
+         Authorization: `Bearer ${token}`},
          body: JSON.stringify(InfoBody)
     }
     const response = await fetch(url, setings )
-    const data = await response.json()
+    const data: QuestionsResponse = await response.json()
     console.log(data)
-
-
+    console.log(data.quiz.Attributes.userId)
+    localStorage.setItem('user',(data.quiz.Attributes.userId)) 
 }
 
-const SpeificQuizFromUser = ()=>{
+const SpeificQuizFromUser = async()=>{
+
+    const quizId = localStorage.getItem('quizId')
+    const userId = localStorage.getItem('user')
+
+    const url  = `https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/${userId}/${quizId}`
+
+    const response = await fetch(url)
+    const data = await response.json()
+    console.log(data)
 
 }
 

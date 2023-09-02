@@ -1,0 +1,7 @@
+Map
+
+Hämta quizQuestions arry från Quiz komponenten
+Spara frågor i localStorage och hämta ner i map komponenten?
+i  map komponenten så loopa ut markers för quizQuestions. Skapa en funcktion som loopar ut ooh skicka ner den funktionen till quiz komponents klick.
+
+add marker till question, longitude latitude bara om man är inloggad för att veta vart man klickat och lägger en fråga.

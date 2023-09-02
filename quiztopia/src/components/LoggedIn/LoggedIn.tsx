@@ -7,9 +7,8 @@ const LoggedIn = ()=>{
 
     // Navigera till utloggad
     const LogOut = ()=>{
-        localStorage.setItem('token', JSON.stringify('')); 
+        localStorage.removeItem('token'); 
         navigate('/LoggedOut');
-
     }
 
     //Skriv ut vem som är inloggad

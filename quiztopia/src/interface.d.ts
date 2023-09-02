@@ -9,7 +9,7 @@ interface DataResponseLoggedIn{
 interface ResponseCreateQuiz{
     succes: boolean
     message?: string
-    quizId?: string
+    quizId?: string | undefined
 }
 interface ResponseGetQuizes{
     quizzes: QuizesResponse[]
@@ -34,4 +34,25 @@ type  SaveResponseQuizes =  React.Dispatch<React.SetStateAction<QuizesResponse[]
 interface PositionGeolocation{
     latitude: number
     longitude: number
+}
+interface QuestionsResponse{
+    quiz: QuestionsResponseQuiz
+}
+interface QuestionsResponseQuiz{
+    Attributes: QuestionsResponseAttributes
+}
+interface QuestionsResponseAttributes{
+    questions:QuestionsResponseAttributesQuestions[]
+    quizId: string
+    userId:string
+    username: string
+}
+interface QuestionsResponseAttributesQuestions{
+    answear: string
+    location: QuestionsResponseLocation
+    question:string
+}
+interface QuestionsResponseLocation{
+    latitude: string
+    longitude: string
 }
