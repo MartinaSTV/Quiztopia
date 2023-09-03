@@ -12,15 +12,17 @@ mapboxgl.accessToken = import.meta.env.VITE_MAP_KEY as string
 interface PropsSetlingSetlat{
     setlngToQuestion: React.Dispatch<React.SetStateAction<number>>
     setlatToQuestion:  React.Dispatch<React.SetStateAction<number>>
+    click: number
 }
 
-const PlayGame = ({ setlngToQuestion, setlatToQuestion }: PropsSetlingSetlat)=>{
+const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSetlat)=>{
     const navigate = useNavigate()
     const [quizesResponse, setGetQuiz] = useState<QuizesResponse[] | []>([])
     const [selectedQuestions, setSelectedQuestions] = useState<QuizResponseQuestions[]>([])
 
     const mapContainer = useRef(null)
     const mapGL = useRef<MapGl | null>(null)
+
     //visar cordinater på karta från geolocation
     const [lng, setlng ]= useState<number>(11.9875166)
     const [lat, setlat ]= useState<number>(57.7084641)
@@ -40,7 +42,6 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion }: PropsSetlingSetlat)=>{
           });
 
           const map: MapGl = mapGL.current
-          
           map.on('move',()=>{
             map.getCenter()
             setzoom(map.getZoom())
@@ -48,6 +49,12 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion }: PropsSetlingSetlat)=>{
 
           map.on('click',(e)=>{
             console.log(e)
+
+            const token: string = (localStorage.getItem('token') || '')
+
+            if(token === ''){ 
+                console.log('Du måste logga in för att clicka i cordinater')
+            }else {
             
             const markerlocation =  new mapboxgl.Marker({color:'#006985'})
             markerlocation.setLngLat([e.lngLat.lng, e.lngLat.lat])
@@ -56,12 +63,21 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion }: PropsSetlingSetlat)=>{
             const lngLat = markerlocation.getLngLat()
             setlatToQuestion(lngLat.lat)
             setlngToQuestion(lngLat.lng)
+            click++
 
-           // vid knapp trycket skicka fråga quizez createquiz
-           // if(removeQuestionMark === false){ markerlocation.remove(mapGL.current) }
-          
-        
-           
+           console.log(click)
+            if (click > 1 ){
+                markerlocation.remove()
+            }
+
+            //funkar ej
+            if( click === 0){
+                markerlocation.remove()
+            }
+
+
+            }
+
           })
 
       },[lat, lng, zoom])
@@ -79,11 +95,8 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion }: PropsSetlingSetlat)=>{
         const markerUserPosition =  new mapboxgl.Marker({color:'#FF69B4'})
         markerUserPosition.setLngLat([positionGeo.longitude, positionGeo.latitude])
         markerUserPosition.setPopup(new mapboxgl.Popup().setHTML("<h1>Du är här</h1>"))
+        markerUserPosition.togglePopup()
         .addTo(mapGL.current);
-
-        mapGL.current.on('mouseenter',() =>{
-            markerUserPosition.setPopup(new mapboxgl.Popup().setHTML("<h1>Du är här</h1>"))
-        })
          }
 
       }catch(error){
@@ -112,9 +125,12 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion }: PropsSetlingSetlat)=>{
 
             if(mapGL.current === null) return
             const markerlocation =  new mapboxgl.Marker({color:'#d6bd8b'})
-            console.log('Location: ', question.location, typeof(question.location.longitude))
+           // console.log('Location: ', question.location, typeof(question.location.longitude))
             markerlocation.setLngLat([Number(question.location.longitude), Number(question.location.latitude)])
             markerlocation.addTo(mapGL.current);
+            markerlocation.setPopup(new mapboxgl.Popup().setHTML(`<h1>${ question.question } Svar: ${ question.answer}</h1>`))
+            .addTo(mapGL.current)
+
         })
     }, [selectedQuestions])
 
@@ -122,7 +138,7 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion }: PropsSetlingSetlat)=>{
         <main className="quizview">
             <button onClick={ ()=>{  navigate('/LogIn') }}>Logga In</button>
             <button onClick={ ()=>{ navigate('/CreateUser')} }>Skapa användare</button>
-            <button onClick={ ShowQuizes }>Visa Quiz</button>
+            <button onClick={ ShowQuizes }>Visa alla Quiz</button>
             <article className='quizview__quizElem'>
                 { QuizElem }
             </article>

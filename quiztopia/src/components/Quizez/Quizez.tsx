@@ -14,12 +14,13 @@ const Quizez = ()=>{
     const [latToQuestion, setlatToQuestion] = useState<number>(0)
     const [lngToQuestion, setlngToQuestion] = useState<number>(0)
     // skicka till Map i PlayGame
-    const [removeQuestionMark , setRemoveQuestionMark] = useState(true)
+    let click = 0
  
     const CreateQuizes = async()=>{
         try{
         await createQuiz(quizName);
         setQuizbutton(false);
+
 
         }catch(error){
             console.log(error,'inget API svar')
@@ -28,10 +29,11 @@ const Quizez = ()=>{
     }
 
     const CreateQuizQuestion = async()=>{
+        click = 0
         try{
         await AddQuestionOnQuiz( quizQuestion, quizAnswear, lngToQuestion, latToQuestion )
-        console.log('createQuizQuestion button')
-        setRemoveQuestionMark(false)
+        setQuizQuestion('')
+        setQuizAnswear('')
         }
         catch(error){
             console.log( 'ingen fråga kunde skickas')
@@ -46,7 +48,7 @@ const Quizez = ()=>{
         <section className='quizez'>
              <h3 className="quizez__header">Skapa Quiz</h3>
             <article className="quizez__section">
-                 <button onClick={ showYourQuizes }>Visa dina Quiz</button>
+                 <button className='quizez__showYourQuizez' onClick={ showYourQuizes }>Visa dina Quiz</button>
                 { hideQuizButton? <label htmlFor="quizname">Välj Quiz namn</label> : ''}
              { hideQuizButton? <input className="quizez__input" type="text" name="" id="quizname" value = { quizName } placeholder="Quiz Namn" onChange={(e)=>{ setQuizName(e.target.value)} } onFocus={()=>{ setQuizName('')}  } /> : ''}
                { hideQuizButton? <button  onClick={ CreateQuizes }>Spara Quiz</button>: <button onClick={  ()=>{ CreateQuizes; setQuizbutton(true); setQuizQuestion('') }} className='quizez__NewQuiz'>Skapa Nytt Quiz</button> }
@@ -62,7 +64,7 @@ const Quizez = ()=>{
 
             </article>: ''}
             <article>
-                <PlayGame setlngToQuestion = { setlngToQuestion} setlatToQuestion ={ setlatToQuestion }  />
+                <PlayGame setlngToQuestion = { setlngToQuestion} setlatToQuestion ={ setlatToQuestion } click = { click }/>
             </article>
         </section>
 
