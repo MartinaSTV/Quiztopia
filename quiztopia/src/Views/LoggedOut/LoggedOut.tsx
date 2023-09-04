@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import './LoggedOut.scss'
 
-const LoggedOut = ()=>{
+const LoggedOut = () => {
 
     const navigate = useNavigate()
 
@@ -12,7 +12,8 @@ const LoggedOut = ()=>{
     return(
         <section className='loggedOut'>
             <p>Du är utloggad</p>
-            <button onClick={ navigateToLogIn }>Logga in igen</button>
+            <button className='loggedOut__button' onClick={ navigateToLogIn }>Logga in igen</button>
+            <button className='loaggedOut__button' onClick={ ()=>{ navigate('/')}}>Tillbaka till Startsida</button>
         </section>
     )
 }

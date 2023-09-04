@@ -9,6 +9,8 @@ const LogIn = ()=>{
     const [password, setpassword]= useState<string>('');
     const [message, setMessage]= useState<string>('')
 
+    localStorage.setItem('name',username)
+
     const navigate = useNavigate()
 
    const logInExisitingAccont = async()=>{

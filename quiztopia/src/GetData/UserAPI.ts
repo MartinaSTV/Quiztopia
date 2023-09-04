@@ -1,3 +1,4 @@
+import { DataResponseCreateAccount, DataResponseLoggedIn } from "../interface"
 
 const createAccount = async( username:string, password: string)=>{
     const url =  'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/auth/signup'

@@ -1,4 +1,6 @@
 
+import { ResponseCreateQuiz, SaveResponseQuizes, ResponseGetQuizes, QuestionsResponse } from "../interface"
+
 const createQuiz = async(quizName:string)=>{
 
     const token: string = JSON.parse(localStorage.getItem('token') || '')
@@ -13,13 +15,12 @@ const createQuiz = async(quizName:string)=>{
     const response = await fetch(url, setings )
     const data:ResponseCreateQuiz = await response.json()
     console.log(data)
-    let quizId = data.quizId
-
-    if(data.quizId === undefined){
+    
+    if(data.succes === false){
         console.log('nu är quizId undefined')
-    }
-    localStorage.setItem('quizId',(quizId)) 
-   
+    }if(data.succes === true) {
+    localStorage.setItem('quizId',(data.quizId)) 
+   }
     if(data.succes === false){
         console.log('du måste logga in igen, din session har gått ut')
     }
@@ -73,16 +74,26 @@ const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:n
     localStorage.setItem('user',(data.quiz.Attributes.userId)) 
 }
 
-const SpeificQuizFromUser = async()=>{
+const SpeificQuizFromUser = async( setspecificQuiz: QuestionsResponse )=>{
 
+    const token: string = JSON.parse(localStorage.getItem('token') || '')
     const quizId = localStorage.getItem('quizId')
     const userId = localStorage.getItem('user')
+    console.log( 'quizId', quizId, 'userID',userId)
 
     const url  = `https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/${userId}/${quizId}`
+    const setings = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`},
+    }
 
-    const response = await fetch(url)
+    const response = await fetch(url, setings)
     const data = await response.json()
     console.log(data)
+    if(data.quiz){
+        setspecificQuiz(data.quiz)
+    }
 
 }
 

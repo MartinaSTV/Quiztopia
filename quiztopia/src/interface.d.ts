@@ -1,27 +1,27 @@
-interface DataResponseCreateAccount{
+export interface DataResponseCreateAccount{
     success: boolean
 }
-interface DataResponseLoggedIn{
+export interface DataResponseLoggedIn{
     succes:string
     token?: string
     messsage?:string
 }
-interface ResponseCreateQuiz{
+export interface ResponseCreateQuiz{
     succes: boolean
     message?: string
-    quizId?: string | undefined
+    quizId?: string 
 }
 interface ResponseGetQuizes{
     quizzes: QuizesResponse[]
     succes: boolean
 }
-interface QuizesResponse{
+export interface QuizesResponse{
     questions:QuizResponseQuestions[]
     quizId: string
     userId: string
     username: string
 }
-interface QuizResponseQuestions{
+export interface QuizResponseQuestions{
     answer: string
     location: {
         latitude: number
@@ -29,16 +29,16 @@ interface QuizResponseQuestions{
     }
     question: string
 }
-type  SaveResponseQuizes =  React.Dispatch<React.SetStateAction<QuizesResponse[]>>
+export type  SaveResponseQuizes =  React.Dispatch<React.SetStateAction<QuizesResponse[]>>
 
-interface PositionGeolocation{
+export interface PositionGeolocation{
     latitude: number
     longitude: number
 }
-interface QuestionsResponse{
+export interface QuestionsResponse{
     quiz: QuestionsResponseQuiz
 }
-interface QuestionsResponseQuiz{
+export interface QuestionsResponseQuiz{
     Attributes: QuestionsResponseAttributes
 }
 interface QuestionsResponseAttributes{
@@ -47,12 +47,24 @@ interface QuestionsResponseAttributes{
     userId:string
     username: string
 }
-interface QuestionsResponseAttributesQuestions{
+export interface QuestionsResponseAttributesQuestions{
     answear: string
     location: QuestionsResponseLocation
     question:string
 }
-interface QuestionsResponseLocation{
+export interface QuestionsResponseLocation{
     latitude: string
     longitude: string
+}
+export interface PropsUserQuiz{
+    quiz: QuizesResponse
+}
+export interface PropsSetlingSetlat{
+    setlngToQuestion: React.Dispatch<React.SetStateAction<number>>
+    setlatToQuestion:  React.Dispatch<React.SetStateAction<number>>
+    click: number
+}
+export interface PropsQuiz{
+    quiz: QuizesResponse;
+    showQuestions: (questions: QuizResponseQuestions[])=> void;
 }

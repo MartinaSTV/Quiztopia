@@ -1,4 +1,5 @@
-.quizview{
+.playGame{
+    margin: 0.5rem;
     &__map{
         padding: 1rem;
     } 
@@ -8,4 +9,8 @@
             padding: 1rem;
             overflow: scroll;
     }
+    &__button{
+        margin-right: 0.5rem;
+    }
+   
 }

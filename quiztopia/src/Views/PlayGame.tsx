@@ -7,21 +7,20 @@ import {useState, useRef, useEffect } from 'react'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl, { LngLat, Map as MapGl }from 'mapbox-gl';
 import './QuizView.scss'
+import { PropsSetlingSetlat, QuizesResponse, QuizResponseQuestions, PositionGeolocation } from "../interface";
 mapboxgl.accessToken = import.meta.env.VITE_MAP_KEY as string
 
-interface PropsSetlingSetlat{
-    setlngToQuestion: React.Dispatch<React.SetStateAction<number>>
-    setlatToQuestion:  React.Dispatch<React.SetStateAction<number>>
-    click: number
-}
+
 
 const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSetlat)=>{
+    const token: string = (localStorage.getItem('token') || '')
     const navigate = useNavigate()
     const [quizesResponse, setGetQuiz] = useState<QuizesResponse[] | []>([])
     const [selectedQuestions, setSelectedQuestions] = useState<QuizResponseQuestions[]>([])
 
     const mapContainer = useRef(null)
     const mapGL = useRef<MapGl | null>(null)
+    const buttonRemoveMarker = useRef<HTMLButtonElement | null>(null)
 
     //visar cordinater på karta från geolocation
     const [lng, setlng ]= useState<number>(11.9875166)
@@ -50,8 +49,6 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
           map.on('click',(e)=>{
             console.log(e)
 
-            const token: string = (localStorage.getItem('token') || '')
-
             if(token === ''){ 
                 console.log('Du måste logga in för att clicka i cordinater')
             }else {
@@ -69,13 +66,14 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
             if (click > 1 ){
                 markerlocation.remove()
             }
-
-            //funkar ej
-            if( click === 0){
+           
+           if (!buttonRemoveMarker.current)return
+           else{
+               buttonRemoveMarker.current.addEventListener('click', ()=>{
                 markerlocation.remove()
-            }
-
-
+                click = 0
+               })
+           }
             }
 
           })
@@ -120,12 +118,12 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
         console.log('selectdQuestions är: ', selectedQuestions); 
 
         selectedQuestions.forEach(question => {
-            if( question.location.latitude ==='undefined' || question.location.longitude === 'undefined' ) return 
+
+            if( String(question.location.latitude) === 'undefined' || String( question.location.longitude) === 'undefined' ) return 
             if( question.location.latitude > 90 && question.location.latitude <-90  || question.location.longitude > 90 && question.location.longitude < -90) return 
 
             if(mapGL.current === null) return
             const markerlocation =  new mapboxgl.Marker({color:'#d6bd8b'})
-           // console.log('Location: ', question.location, typeof(question.location.longitude))
             markerlocation.setLngLat([Number(question.location.longitude), Number(question.location.latitude)])
             markerlocation.addTo(mapGL.current);
             markerlocation.setPopup(new mapboxgl.Popup().setHTML(`<h1>${ question.question } Svar: ${ question.answer}</h1>`))
@@ -135,16 +133,18 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
     }, [selectedQuestions])
 
     return(
-        <main className="quizview">
-            <button onClick={ ()=>{  navigate('/LogIn') }}>Logga In</button>
-            <button onClick={ ()=>{ navigate('/CreateUser')} }>Skapa användare</button>
-            <button onClick={ ShowQuizes }>Visa alla Quiz</button>
-            <article className='quizview__quizElem'>
+        <main className="playGame">
+          { token? '' : <button className="playGame__button" onClick={ ()=>{  navigate('/LogIn') }}>Logga In</button>}
+          { token? '' :  <button className="playGame__button" onClick={ ()=>{ navigate('/CreateUser')} }>Skapa användare</button>}
+            <button className="playGame__button" onClick={ ShowQuizes }>Visa alla Quiz</button>
+            {token? <button className="playGame__button" ref={ buttonRemoveMarker }>Ta bort blå markör</button> : ''}
+            <article className='playGame__quizElem'>
                 { QuizElem }
             </article>
-            <section className='quizview__map'>
+            <p>Klicka på Markör på kartan för att se frågor</p>
+            <section className='playGame__map'>
             <div ref={ mapContainer} className='map-container'></div>
-            <p>Lattitude {lat} Longitude {lng}</p>
+            <p>Rosa Markör visar vart du är på kartan</p>
             </section>
         </main>
     )

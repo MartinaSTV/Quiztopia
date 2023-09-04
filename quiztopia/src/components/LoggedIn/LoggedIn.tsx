@@ -10,11 +10,12 @@ const LoggedIn = ()=>{
         localStorage.removeItem('token'); 
         navigate('/LoggedOut');
     }
+    const username =  localStorage.getItem('name')
 
     //Skriv ut vem som är inloggad
     return(
         <section className='loggedIn'>
-            <p>Du är inloggad</p>
+            <p>Du är inloggad { username }</p>
             <button className='loggedIn_button' onClick={ LogOut }>Logga ut</button>
         </section>
     )

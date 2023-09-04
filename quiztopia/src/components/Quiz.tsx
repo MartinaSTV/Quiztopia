@@ -1,7 +1,4 @@
-interface PropsQuiz{
-    quiz: QuizesResponse;
-    showQuestions: (questions: QuizResponseQuestions[])=> void;
-}
+import { PropsQuiz } from "../interface"
 
 const Quiz= ({quiz, showQuestions}: PropsQuiz )=>{
     
