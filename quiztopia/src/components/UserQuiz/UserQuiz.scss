@@ -1,3 +1,13 @@
 .userQuiz{
  border: 1px solid black;
+ max-width: 10rem;
+ display: flex;
+
+ &__message{
+    margin-left: 0.5rem;
+ }
+ &__button{
+   margin-left: auto;
+}
+
 }

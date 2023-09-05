@@ -2,15 +2,14 @@ import { useNavigate } from "react-router-dom";
 import './PlayGame.scss'
 import geolocation from "../GetData/Geolocation";
 import { getQuizes } from "../GetData/QuizAPI";
-import Quiz from "../components/Quiz";
+import Quiz from "../components/Quiz/Quiz";
 import {useState, useRef, useEffect } from 'react'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl, { LngLat, Map as MapGl }from 'mapbox-gl';
 import './QuizView.scss'
 import { PropsSetlingSetlat, QuizesResponse, QuizResponseQuestions, PositionGeolocation } from "../interface";
+
 mapboxgl.accessToken = import.meta.env.VITE_MAP_KEY as string
-
-
 
 const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSetlat)=>{
     const token: string = (localStorage.getItem('token') || '')
@@ -26,6 +25,8 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
     const [lng, setlng ]= useState<number>(11.9875166)
     const [lat, setlat ]= useState<number>(57.7084641)
     const [zoom, setzoom ]= useState<number>(10)
+
+    const markerQuizRef = useRef<mapboxgl.Marker | null>(null)
 
     useEffect(()=>{
 
@@ -52,7 +53,6 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
             if(token === ''){ 
                 console.log('Du måste logga in för att clicka i cordinater')
             }else {
-            
             const markerlocation =  new mapboxgl.Marker({color:'#006985'})
             markerlocation.setLngLat([e.lngLat.lng, e.lngLat.lat])
             .addTo(map);
@@ -115,20 +115,23 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
     }) 
 
     useEffect(() => {
-        console.log('selectdQuestions är: ', selectedQuestions); 
+        console.log('selectdQuestions', selectedQuestions); 
+     
 
         selectedQuestions.forEach(question => {
+            
+            if(markerQuizRef.current){ markerQuizRef.current.remove()}
 
             if( String(question.location.latitude) === 'undefined' || String( question.location.longitude) === 'undefined' ) return 
             if( question.location.latitude > 90 && question.location.latitude <-90  || question.location.longitude > 90 && question.location.longitude < -90) return 
 
             if(mapGL.current === null) return
-            const markerlocation =  new mapboxgl.Marker({color:'#d6bd8b'})
-            markerlocation.setLngLat([Number(question.location.longitude), Number(question.location.latitude)])
-            markerlocation.addTo(mapGL.current);
-            markerlocation.setPopup(new mapboxgl.Popup().setHTML(`<h1>${ question.question } Svar: ${ question.answer}</h1>`))
+    
+            markerQuizRef.current = new mapboxgl.Marker({color:'#d6bd8b'})
+            markerQuizRef.current.setLngLat([Number(question.location.longitude), Number(question.location.latitude)])
+            markerQuizRef.current.addTo(mapGL.current);
+            markerQuizRef.current.setPopup(new mapboxgl.Popup().setHTML(`<h1>${ question.question } Svar: ${ question.answer}</h1>`))
             .addTo(mapGL.current)
-
         })
     }, [selectedQuestions])
 

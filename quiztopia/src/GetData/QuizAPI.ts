@@ -19,14 +19,14 @@ const createQuiz = async(quizName:string)=>{
     if(data.succes === false){
         console.log('nu är quizId undefined')
     }if(data.succes === true) {
-    localStorage.setItem('quizId',(data.quizId)) 
+    localStorage.setItem('quizId',(data.quizId) || '')
    }
     if(data.succes === false){
         console.log('du måste logga in igen, din session har gått ut')
     }
 }
 
-const getQuizes =  async( setGetQuiz: SaveResponseQuizes )=>{
+const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
 
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
     const setings = {
@@ -74,7 +74,7 @@ const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:n
     localStorage.setItem('user',(data.quiz.Attributes.userId)) 
 }
 
-const SpeificQuizFromUser = async( setspecificQuiz: QuestionsResponse )=>{
+const SpeificQuizFromUser = async( )=>{
 
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     const quizId = localStorage.getItem('quizId')
@@ -92,10 +92,45 @@ const SpeificQuizFromUser = async( setspecificQuiz: QuestionsResponse )=>{
     const data = await response.json()
     console.log(data)
     if(data.quiz){
-        setspecificQuiz(data.quiz)
+  
     }
 
 }
 
-export { createQuiz, getQuizes, AddQuestionOnQuiz, SpeificQuizFromUser }
+const deleteQuiz = async( quizId: string )=>{
+
+    const token: string = JSON.parse(localStorage.getItem('token') || '')
+    const url  = `https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/${quizId}`
+    const setings = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`}
+    }
+    const response = await fetch(url, setings)
+    const data = await response.json()
+    console.log(data)
+}
+
+const getQuizesAgainTest = ()=> async( setUserQuizes: ResponseGetQuizes[]  )=>{
+
+    const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
+    const setings = {
+        method:'GET',
+        headers: { 'Content-Type': 'application/json' },
+    }
+    const response = await fetch(url, setings )
+    const data: ResponseGetQuizes = await response.json()
+     console.log(data)
+     data.quizzes
+
+     const username =  localStorage.getItem('name')
+     if(data.quizzes && data.quizzes.length > 0 ){
+     const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
+     //setUserQuizes( userQuizes)
+
+     }else { console.log( 'INNE I ELSE')}
+
+}
+
+export { createQuiz, getQuizes, AddQuestionOnQuiz, SpeificQuizFromUser, deleteQuiz, getQuizesAgainTest }
 

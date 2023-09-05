@@ -1,9 +1,9 @@
 import { useState }from 'react'
-import { createQuiz, AddQuestionOnQuiz, getQuizes } from '../../GetData/QuizAPI'
+import { createQuiz, AddQuestionOnQuiz, getQuizesAgainTest } from '../../GetData/QuizAPI'
 import PlayGame from '../../Views/PlayGame'
 import UserQuizes from '../UserQuiz/UserQuizez'
 import './Quizez.scss'
-import { QuizesResponse } from '../../interface'
+import { QuizesResponse, ResponseGetQuizes } from '../../interface'
 
 const Quizez = ()=>{
 
@@ -18,10 +18,8 @@ const Quizez = ()=>{
     console.log(latToQuestion, lngToQuestion, 'korr till frågor')
 
     //hämta user quizes
-    const [quizesResponse, setGetQuiz ]= useState<QuizesResponse[] | []>([])
+    //const [quizesResponse, setGetQuiz ]= useState<QuizesResponse[] | []>([])
     const [ userQuizes, setUserQuizes] = useState<QuizesResponse[] | []>([])
-
-    console.log(quizesResponse)
     
     // skicka till MapBox i PlayGame
     let click = 0
@@ -53,26 +51,30 @@ const Quizez = ()=>{
     //måste klicka två gånger?? annars inne i else
     const showYourQuizes = async()=>{
     try{ 
-       await getQuizes( setGetQuiz );
-       filterQuizes()
+           
+        const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
+        const setings = {
+            method:'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        const response = await fetch(url, setings )
+        const data: ResponseGetQuizes = await response.json()
+        console.log(data)
+    
+            const username =  localStorage.getItem('name')
+            if(data.quizzes && data.quizzes.length > 0 ){
+            const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
+            setUserQuizes( userQuizes)
+    
+            }
 
       }catch(error){
         console.log('inget API')
       }
      
     } 
-    const filterQuizes = ()=>{
-            const username =  localStorage.getItem('name')
-            if(quizesResponse.length > 0 ){
-            const userQuizes = quizesResponse.filter((quiz) =>  quiz.username === username )
-            setUserQuizes( userQuizes)
-    
-            }else { console.log( 'INNE I ELSE')}
-    }
 
       const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index }/> )
-
-      
 
     return(
         <section className='quizez'>
