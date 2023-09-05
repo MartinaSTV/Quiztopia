@@ -3,43 +3,43 @@ import { createQuiz, AddQuestionOnQuiz, getQuizesAgainTest } from '../../GetData
 import PlayGame from '../../Views/PlayGame'
 import UserQuizes from '../UserQuiz/UserQuizez'
 import './Quizez.scss'
-import { QuizesResponse, ResponseGetQuizes } from '../../interface'
+import { QuizesResponse } from '../../interface'
 
 const Quizez = ()=>{
 
-    const [quizName, setQuizName] = useState<string>('')
-    const[ quizQuestion , setQuizQuestion ] = useState<string>('')
-    const [quizAnswear, setQuizAnswear] = useState<string>('')
-    const [hideQuizButton ,setQuizbutton] = useState<boolean>(true)
+    const [quizName, setQuizName] = useState<string>('');
+    const[ quizQuestion , setQuizQuestion ] = useState<string>('');
+    const [quizAnswear, setQuizAnswear] = useState<string>('');
+    const [hideQuizButton ,setQuizbutton] = useState<boolean>(true);
+    const [MessageQuizError, setMessageQuizError] = useState<string>('');
 
     //hämta cordinaterna från frågor ifrån PlayGame viewn
-    const [latToQuestion, setlatToQuestion] = useState<number>(0)
-    const [lngToQuestion, setlngToQuestion] = useState<number>(0)
-    console.log(latToQuestion, lngToQuestion, 'korr till frågor')
+    const [latToQuestion, setlatToQuestion] = useState<number>(0);
+    const [lngToQuestion, setlngToQuestion] = useState<number>(0);
+    console.log(latToQuestion, lngToQuestion, 'korr till frågor');
 
-    //hämta user quizes
-    //const [quizesResponse, setGetQuiz ]= useState<QuizesResponse[] | []>([])
-    const [ userQuizes, setUserQuizes] = useState<QuizesResponse[] | []>([])
+    //hämta user quizes sorterade från apit
+    const [ userQuizes, setUserQuizes] = useState<QuizesResponse[] | []>([]);
     
     // skicka till MapBox i PlayGame
     let click = 0
  
     const CreateQuizes = async()=>{
         try{
-        await createQuiz(quizName);
+        await createQuiz(quizName, setMessageQuizError);
         setQuizbutton(false);
 
         }catch(error){
-            console.log(error,'inget API svar')
-            setQuizbutton(true)
+            setMessageQuizError('kunde inte skapa Quiz')
+            setQuizbutton(true);
         }
     }
 
     const CreateQuizQuestion = async()=>{
         try{
-        await AddQuestionOnQuiz( quizQuestion, quizAnswear, lngToQuestion, latToQuestion )
-        setQuizQuestion('')
-        setQuizAnswear('')
+        await AddQuestionOnQuiz( quizQuestion, quizAnswear, lngToQuestion, latToQuestion );
+        setQuizQuestion('');
+        setQuizAnswear('');
         }
         catch(error){
             console.log( 'ingen fråga kunde skickas')
@@ -48,33 +48,10 @@ const Quizez = ()=>{
         click = 0
     }
 
-    //måste klicka två gånger?? annars inne i else
     const showYourQuizes = async()=>{
-    try{ 
-           
-        const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
-        const setings = {
-            method:'GET',
-            headers: { 'Content-Type': 'application/json' },
-        }
-        const response = await fetch(url, setings )
-        const data: ResponseGetQuizes = await response.json()
-        console.log(data)
-    
-            const username =  localStorage.getItem('name')
-            if(data.quizzes && data.quizzes.length > 0 ){
-            const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
-            setUserQuizes( userQuizes)
-    
-            }
-
-      }catch(error){
-        console.log('inget API')
-      }
-     
+        getQuizesAgainTest( setUserQuizes )
     } 
-
-      const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index }/> )
+    const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index }/> )
 
     return(
         <section className='quizez'>
@@ -83,6 +60,7 @@ const Quizez = ()=>{
              <article className='quizes__UserQuizElem'> { UserQuizElem } </article>
             <article className="quizez__section">
                 { hideQuizButton? <label htmlFor="quizname">Välj Quiz namn</label> : ''}
+                { MessageQuizError }
              { hideQuizButton? <input className="quizez__input" type="text" name="" id="quizname" value = { quizName } placeholder="Quiz Namn" onChange={(e)=>{ setQuizName(e.target.value)} } onFocus={()=>{ setQuizName('')}  } /> : ''}
                { hideQuizButton? <button  onClick={ CreateQuizes }>Spara Quiz</button>: <button onClick={  ()=>{ CreateQuizes; setQuizbutton(true); setQuizQuestion('') }} className='quizez__NewQuiz'>Skapa Nytt Quiz</button> }
             </article>

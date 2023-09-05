@@ -25,6 +25,7 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
     const [lng, setlng ]= useState<number>(11.9875166)
     const [lat, setlat ]= useState<number>(57.7084641)
     const [zoom, setzoom ]= useState<number>(10)
+    const [MessageGeo, setMessageGeo] = useState<string>('')
 
     const markerQuizRef = useRef<mapboxgl.Marker | null>(null)
 
@@ -53,6 +54,8 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
             if(token === ''){ 
                 console.log('Du måste logga in för att clicka i cordinater')
             }else {
+
+             if(markerQuizRef.current)return
             const markerlocation =  new mapboxgl.Marker({color:'#006985'})
             markerlocation.setLngLat([e.lngLat.lng, e.lngLat.lat])
             .addTo(map);
@@ -87,9 +90,9 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
         setlng(positionGeo.longitude)
 
         if(mapGL.current === null) {
-            //Skriv ut att din position kan inte hittas
-            console.log(' tillåt din position för att använda app ')
+            setMessageGeo('Kartan kan inte visas')
        } else{ 
+
         const markerUserPosition =  new mapboxgl.Marker({color:'#FF69B4'})
         markerUserPosition.setLngLat([positionGeo.longitude, positionGeo.latitude])
         markerUserPosition.setPopup(new mapboxgl.Popup().setHTML("<h1>Du är här</h1>"))
@@ -98,7 +101,7 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
          }
 
       }catch(error){
-        console.log('inga kordinater från din position')
+        setMessageGeo('Tillåt åtkomst till din plats för att använda Application')
       }
 
       }
@@ -115,15 +118,14 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
     }) 
 
     useEffect(() => {
-        console.log('selectdQuestions', selectedQuestions); 
      
-
         selectedQuestions.forEach(question => {
             
             if(markerQuizRef.current){ markerQuizRef.current.remove()}
 
             if( String(question.location.latitude) === 'undefined' || String( question.location.longitude) === 'undefined' ) return 
             if( question.location.latitude > 90 && question.location.latitude <-90  || question.location.longitude > 90 && question.location.longitude < -90) return 
+            //fixa om det blir NaN
 
             if(mapGL.current === null) return
     
@@ -137,6 +139,7 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
 
     return(
         <main className="playGame">
+            <p>{ MessageGeo }</p>
           { token? '' : <button className="playGame__button" onClick={ ()=>{  navigate('/LogIn') }}>Logga In</button>}
           { token? '' :  <button className="playGame__button" onClick={ ()=>{ navigate('/CreateUser')} }>Skapa användare</button>}
             <button className="playGame__button" onClick={ ShowQuizes }>Visa alla Quiz</button>

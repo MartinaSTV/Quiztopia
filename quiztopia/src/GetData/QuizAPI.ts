@@ -1,7 +1,7 @@
 
-import { ResponseCreateQuiz, SaveResponseQuizes, ResponseGetQuizes, QuestionsResponse } from "../interface"
+import { ResponseCreateQuiz, SaveResponseQuizes, ResponseGetQuizes, QuestionsResponse,SetMessageQuizErrors, SetUserQuiz } from "../interface"
 
-const createQuiz = async(quizName:string)=>{
+const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErrors  )=>{
 
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     console.log(token)
@@ -15,15 +15,13 @@ const createQuiz = async(quizName:string)=>{
     const response = await fetch(url, setings )
     const data:ResponseCreateQuiz = await response.json()
     console.log(data)
-    
-    if(data.succes === false){
-        console.log('nu är quizId undefined')
-    }if(data.succes === true) {
+   
+    if(data.succes === true) {
     localStorage.setItem('quizId',(data.quizId) || '')
+   }else {
+    setMessageQuizError('Kunde inte skapa Quiz!! Testa ett annat quiz namn')
    }
-    if(data.succes === false){
-        console.log('du måste logga in igen, din session har gått ut')
-    }
+  
 }
 
 const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
@@ -40,6 +38,8 @@ const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
     if(data.quizzes){
         setGetQuiz(data.quizzes)
     }
+    //fixa felhantering
+   
 }
 
 const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:number, lat:number)=>{
@@ -72,29 +72,8 @@ const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:n
     console.log(data)
     console.log(data.quiz.Attributes.userId)
     localStorage.setItem('user',(data.quiz.Attributes.userId)) 
-}
 
-const SpeificQuizFromUser = async( )=>{
-
-    const token: string = JSON.parse(localStorage.getItem('token') || '')
-    const quizId = localStorage.getItem('quizId')
-    const userId = localStorage.getItem('user')
-    console.log( 'quizId', quizId, 'userID',userId)
-
-    const url  = `https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/${userId}/${quizId}`
-    const setings = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`},
-    }
-
-    const response = await fetch(url, setings)
-    const data = await response.json()
-    console.log(data)
-    if(data.quiz){
-  
-    }
-
+    //fixa felahantering
 }
 
 const deleteQuiz = async( quizId: string )=>{
@@ -111,26 +90,28 @@ const deleteQuiz = async( quizId: string )=>{
     console.log(data)
 }
 
-const getQuizesAgainTest = ()=> async( setUserQuizes: ResponseGetQuizes[]  )=>{
+const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz )=>{
 
-    const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
-    const setings = {
-        method:'GET',
-        headers: { 'Content-Type': 'application/json' },
-    }
-    const response = await fetch(url, setings )
-    const data: ResponseGetQuizes = await response.json()
-     console.log(data)
-     data.quizzes
+    try{ 
+        const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
+        const setings = {
+            method:'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        const response = await fetch(url, setings )
+        const data: ResponseGetQuizes = await response.json()
+        console.log(data)
+    
+            const username =  localStorage.getItem('name')
+            if(data.quizzes && data.quizzes.length > 0 ){
+            const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
+            setUserQuizes( userQuizes)
+            } 
 
-     const username =  localStorage.getItem('name')
-     if(data.quizzes && data.quizzes.length > 0 ){
-     const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
-     //setUserQuizes( userQuizes)
-
-     }else { console.log( 'INNE I ELSE')}
-
+      }catch(error){
+        console.log('inget API')
+      }
 }
 
-export { createQuiz, getQuizes, AddQuestionOnQuiz, SpeificQuizFromUser, deleteQuiz, getQuizesAgainTest }
+export { createQuiz, getQuizes, AddQuestionOnQuiz, deleteQuiz, getQuizesAgainTest }
 

@@ -68,3 +68,6 @@ export interface PropsQuiz{
     quiz: QuizesResponse;
     showQuestions: (questions: QuizResponseQuestions[])=> void;
 }
+export type SetMessageQuizErrors = React.Dispatch<React.SetStateAction<string>>
+
+export type SetUserQuiz =  React.Dispatch<React.SetStateAction<QuizesResponse[] | []>>
