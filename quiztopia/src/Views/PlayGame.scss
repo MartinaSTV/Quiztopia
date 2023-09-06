@@ -1,16 +1,33 @@
 .playGame{
     margin: 0.5rem;
+    padding: 0.5rem;
     &__map{
         padding: 1rem;
     } 
-    
     &__quizElem{
+        margin-top: 0.5rem;
             display: flex;
             padding: 1rem;
             overflow: scroll;
     }
     &__button{
         margin-right: 0.5rem;
+    }
+    &__buttonGame{
+        margin-right: 0.5rem;
+        background-color:rgb(233, 164, 176) ;
+    }
+    &__errorMessage{
+        color: rgb(230, 112, 131);
+        font-weight: 500;
+    }
+    &__messageGeo{
+        color: rgb(230, 112, 131);
+        font-weight: 500;
+    }
+    &__textMarkerInfo{
+       color:rgb(230, 112, 131);
+       text-shadow: 1px 0.5px lightgray;
     }
    
 }

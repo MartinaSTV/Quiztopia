@@ -7,13 +7,13 @@ export interface DataResponseLoggedIn{
     messsage?:string
 }
 export interface ResponseCreateQuiz{
-    succes: boolean
+    success: boolean
     message?: string
     quizId?: string 
 }
 interface ResponseGetQuizes{
     quizzes: QuizesResponse[]
-    succes: boolean
+    success: boolean
 }
 export interface QuizesResponse{
     questions:QuizResponseQuestions[]
@@ -37,6 +37,7 @@ export interface PositionGeolocation{
 }
 export interface QuestionsResponse{
     quiz: QuestionsResponseQuiz
+    success: boolean
 }
 export interface QuestionsResponseQuiz{
     Attributes: QuestionsResponseAttributes

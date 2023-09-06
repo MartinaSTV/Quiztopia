@@ -5,17 +5,21 @@ import { getQuizes } from "../GetData/QuizAPI";
 import Quiz from "../components/Quiz/Quiz";
 import {useState, useRef, useEffect } from 'react'
 import 'mapbox-gl/dist/mapbox-gl.css';
-import mapboxgl, { LngLat, Map as MapGl }from 'mapbox-gl';
+import mapboxgl, { LngLat, Map as MapGl } from 'mapbox-gl';
 import './QuizView.scss'
 import { PropsSetlingSetlat, QuizesResponse, QuizResponseQuestions, PositionGeolocation } from "../interface";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAP_KEY as string
 
-const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSetlat)=>{
+const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSetlat) => {
     const token: string = (localStorage.getItem('token') || '')
     const navigate = useNavigate()
+
     const [quizesResponse, setGetQuiz] = useState<QuizesResponse[] | []>([])
     const [selectedQuestions, setSelectedQuestions] = useState<QuizResponseQuestions[]>([])
+    console.log(selectedQuestions)
+    const [errorMessage, setErrorMessage] = useState<string>('')
+    const [toggelQuizButton , setToggelQuizbutton] = useState<boolean>(false)
 
     const mapContainer = useRef(null)
     const mapGL = useRef<MapGl | null>(null)
@@ -54,10 +58,11 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
             if(token === ''){ 
                 console.log('Du måste logga in för att clicka i cordinater')
             }else {
+                if(markerQuizRef.current) return
 
-             if(markerQuizRef.current)return
             const markerlocation =  new mapboxgl.Marker({color:'#006985'})
             markerlocation.setLngLat([e.lngLat.lng, e.lngLat.lat])
+            markerlocation.setPopup(new mapboxgl.Popup().setHTML("<h1>Din fråga placeras här</h1>"))
             .addTo(map);
 
             const lngLat = markerlocation.getLngLat()
@@ -83,7 +88,7 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
 
       },[lat, lng, zoom])
 
-      const getPositionCordinate = async ()=>{
+      const getPositionCordinate = async () => {
         try{   
         let positionGeo: PositionGeolocation  = await geolocation()
         setlat(positionGeo.latitude)
@@ -91,8 +96,7 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
 
         if(mapGL.current === null) {
             setMessageGeo('Kartan kan inte visas')
-       } else{ 
-
+       } else { 
         const markerUserPosition =  new mapboxgl.Marker({color:'#FF69B4'})
         markerUserPosition.setLngLat([positionGeo.longitude, positionGeo.latitude])
         markerUserPosition.setPopup(new mapboxgl.Popup().setHTML("<h1>Du är här</h1>"))
@@ -106,11 +110,15 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
 
       }
       const ShowQuizes = async ()=>{
-        await getQuizes( setGetQuiz )
+        try{ 
+        await getQuizes( setGetQuiz );
+        setToggelQuizbutton(!toggelQuizButton);
+        } catch(error){
+            setErrorMessage('Kunde inte hämta Quiz')
+        }
       }
-
       const showQuestionsOnMap = (questions: QuizResponseQuestions[]) => {
-          setSelectedQuestions(questions)
+        setSelectedQuestions(questions)
       }
       
     const QuizElem = quizesResponse.map((quiz, index)=>{
@@ -121,7 +129,8 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
      
         selectedQuestions.forEach(question => {
             
-            if(markerQuizRef.current){ markerQuizRef.current.remove()}
+          //denna funkakde inte ändå
+           // if(markerQuizRef.current){ markerQuizRef.current.remove()}
 
             if( String(question.location.latitude) === 'undefined' || String( question.location.longitude) === 'undefined' ) return 
             if( question.location.latitude > 90 && question.location.latitude <-90  || question.location.longitude > 90 && question.location.longitude < -90) return 
@@ -132,25 +141,26 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
             markerQuizRef.current = new mapboxgl.Marker({color:'#d6bd8b'})
             markerQuizRef.current.setLngLat([Number(question.location.longitude), Number(question.location.latitude)])
             markerQuizRef.current.addTo(mapGL.current);
-            markerQuizRef.current.setPopup(new mapboxgl.Popup().setHTML(`<h1>${ question.question } Svar: ${ question.answer}</h1>`))
+            markerQuizRef.current.setPopup(new mapboxgl.Popup().setHTML(`<h1>Fråga: ${ question.question } Svar: ${ question.answer}</h1>`))
             .addTo(mapGL.current)
         })
     }, [selectedQuestions])
 
     return(
         <main className="playGame">
-            <p>{ MessageGeo }</p>
-          { token? '' : <button className="playGame__button" onClick={ ()=>{  navigate('/LogIn') }}>Logga In</button>}
-          { token? '' :  <button className="playGame__button" onClick={ ()=>{ navigate('/CreateUser')} }>Skapa användare</button>}
-            <button className="playGame__button" onClick={ ShowQuizes }>Visa alla Quiz</button>
+            <p className="playGame__messageGeo">{ MessageGeo }</p>
+            { token? '' : <button className="playGame__button" onClick={ ()=>{  navigate('/LogIn') }}>Logga In</button>}
+            { token? '' :  <button className="playGame__button" onClick={ ()=>{ navigate('/CreateUser')} }>Skapa användare</button>}
+            { token? null : <button className="playGame__buttonGame" onClick={ ShowQuizes }>Visa alla Quiz</button>}
+            <p className="playGame__erroMessage">{ errorMessage }</p>
             {token? <button className="playGame__button" ref={ buttonRemoveMarker }>Ta bort blå markör</button> : ''}
-            <article className='playGame__quizElem'>
-                { QuizElem }
-            </article>
-            <p>Klicka på Markör på kartan för att se frågor</p>
+
+            {toggelQuizButton? <article className='playGame__quizElem'>{ QuizElem }</article> : ''}
+
+           { token? null : <p>Välj Quiz och Klicka på Markör på kartan för att se frågor</p>}
             <section className='playGame__map'>
             <div ref={ mapContainer} className='map-container'></div>
-            <p>Rosa Markör visar vart du är på kartan</p>
+            <p className=" playGame__textMarkerInfo">Rosa Markör visar vart du är på kartan</p>
             </section>
         </main>
     )

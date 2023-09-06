@@ -21,7 +21,7 @@ const LogIn = ()=>{
         setMessage('Kunde inte logga in');
     }
     const token: string = JSON.parse(localStorage.getItem('token') || '')
-    if( token === ''){  setMessage('Kunde inte logga in'); }
+    if( !token ){  setMessage('Kunde inte logga in'); }
     else{ navigate('/CreateQuiz');
     }
    }
@@ -30,9 +30,9 @@ const LogIn = ()=>{
         <section className='logIn'>
             <h4>Logga In</h4>
             <input className='logIn__input' type="text" placeholder='Username' value={ username } onChange={ (e)=>{ setUsername(e.target.value)}} />
-            <input className='logIn__input' type="text" placeholder='password' value={ password } onChange={ (e)=>{ setpassword(e.target.value)}}/>
+            <input className='logIn__input' type="password" placeholder='password' value={ password } onChange={ (e)=>{ setpassword(e.target.value)}}/>
             <button onClick={ logInExisitingAccont }>Logga in</button>
-            <p>{message}</p>
+            <p>{ message }</p>
         </section>
     )
 }

@@ -1,10 +1,9 @@
 
 import { ResponseCreateQuiz, SaveResponseQuizes, ResponseGetQuizes, QuestionsResponse,SetMessageQuizErrors, SetUserQuiz } from "../interface"
 
-const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErrors  )=>{
+const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErrors  ) => {
 
     const token: string = JSON.parse(localStorage.getItem('token') || '')
-    console.log(token)
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
 
     const setings = {
@@ -15,12 +14,12 @@ const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErr
     const response = await fetch(url, setings )
     const data:ResponseCreateQuiz = await response.json()
     console.log(data)
-   
-    if(data.succes === true) {
     localStorage.setItem('quizId',(data.quizId) || '')
-   }else {
-    setMessageQuizError('Kunde inte skapa Quiz!! Testa ett annat quiz namn')
-   }
+   
+    if(data.success === false){
+    console.log('kunde inte skapa quiz API')
+     setMessageQuizError('Kunde inte skapa Quiz!!') 
+    }
   
 }
 
@@ -42,12 +41,13 @@ const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
    
 }
 
-const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:number, lat:number)=>{
+const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:number, lat:number, setQuizQuestionMessage ) => {
 
     const longitude = lon.toString()
     const latitude = lat.toString()
     console.log(lat, lon, 'api')
     const quizId = localStorage.getItem('quizId')
+    //const name = localStorage.getItem('name')
     console.log(quizId)
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/question' 
@@ -70,13 +70,17 @@ const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:n
     const response = await fetch(url, setings )
     const data: QuestionsResponse = await response.json()
     console.log(data)
-    console.log(data.quiz.Attributes.userId)
     localStorage.setItem('user',(data.quiz.Attributes.userId)) 
+    
+    if(data.success){  setQuizQuestionMessage( 'Fråga tillagd på quiz, du kan lägga till fler') }
+    if (data.success === false ){ setQuizQuestionMessage('Kunde inte lägga till fråga')}
 
-    //fixa felahantering
+    let question = data.quiz.Attributes.questions.pop()
+    console.log(question)
+    if(question?.location.latitude === '0' ){ setQuizQuestionMessage(' OBS, Inga kordinater tillaggda till fråga!')}
 }
 
-const deleteQuiz = async( quizId: string )=>{
+const deleteQuiz = async( quizId: string ) => {
 
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     const url  = `https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/${quizId}`
@@ -90,7 +94,7 @@ const deleteQuiz = async( quizId: string )=>{
     console.log(data)
 }
 
-const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz )=>{
+const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz ) => {
 
     try{ 
         const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'

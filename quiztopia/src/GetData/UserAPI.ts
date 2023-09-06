@@ -13,7 +13,10 @@ const createAccount = async( username:string, password: string)=>{
     console.log(data)
 }
 
-const LogInExisitingAccont = async(password:string, username:string)=>{
+const LogInExisitingAccont = async(username:string, password:string)=>{
+    console.log(username, 'username')
+    console.log(password, 'password')
+    
 
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/auth/login' 
     const setings =  {
