@@ -1,5 +1,5 @@
 
-import { ResponseCreateQuiz, SaveResponseQuizes, ResponseGetQuizes, QuestionsResponse,SetMessageQuizErrors, SetUserQuiz } from "../interface"
+import { ResponseCreateQuiz, SaveResponseQuizes, ResponseGetQuizes, QuestionsResponse,SetMessageQuizErrors, SetUserQuiz, SetStateQuestionMessage } from "../interface"
 
 const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErrors  ) => {
 
@@ -41,13 +41,13 @@ const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
    
 }
 
-const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:number, lat:number, setQuizQuestionMessage ) => {
+
+const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:number, lat:number, setQuizQuestionMessage:SetStateQuestionMessage ) => {
 
     const longitude = lon.toString()
     const latitude = lat.toString()
     console.log(lat, lon, 'api')
     const quizId = localStorage.getItem('quizId')
-    //const name = localStorage.getItem('name')
     console.log(quizId)
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/question' 
@@ -111,7 +111,6 @@ const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz ) => {
             const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
             setUserQuizes( userQuizes)
             } 
-
       }catch(error){
         console.log('inget API')
       }

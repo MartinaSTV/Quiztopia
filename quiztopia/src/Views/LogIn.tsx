@@ -20,7 +20,7 @@ const LogIn = ()=>{
     }catch(error){
         setMessage('Kunde inte logga in');
     }
-    const token: string = JSON.parse(localStorage.getItem('token') || '')
+    const token: string = (localStorage.getItem('token') || '')
     if( !token ){  setMessage('Kunde inte logga in'); }
     else{ navigate('/CreateQuiz');
     }

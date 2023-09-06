@@ -5,7 +5,6 @@ const LoggedIn = ()=>{
     
     const navigate = useNavigate()
 
-    // Navigera till utloggad
     const LogOut = ()=>{
         localStorage.removeItem('token'); 
         localStorage.removeItem('quizId');
@@ -17,8 +16,6 @@ const LoggedIn = ()=>{
     const token = localStorage.getItem('token')
     if(!token){ LogOut }
 
-
-    //Skriv ut vem som är inloggad
     return(
         <section className='loggedIn'>
             <p className='loggedIn__name'>Du är inloggad { username }</p>

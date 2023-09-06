@@ -72,3 +72,5 @@ export interface PropsQuiz{
 export type SetMessageQuizErrors = React.Dispatch<React.SetStateAction<string>>
 
 export type SetUserQuiz =  React.Dispatch<React.SetStateAction<QuizesResponse[] | []>>
+
+export type SetStateQuestionMessage =  React.Dispatch<React.SetStateAction<string>>

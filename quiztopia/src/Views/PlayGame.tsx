@@ -134,7 +134,7 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
 
             if( String(question.location.latitude) === 'undefined' || String( question.location.longitude) === 'undefined' ) return 
             if( question.location.latitude > 90 && question.location.latitude <-90  || question.location.longitude > 90 && question.location.longitude < -90) return 
-            //fixa om det blir NaN
+            if(isNaN(question.location.latitude ) || isNaN(question.location.latitude)) return
 
             if(mapGL.current === null) return
     
@@ -153,7 +153,7 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
             { token? '' :  <button className="playGame__button" onClick={ ()=>{ navigate('/CreateUser')} }>Skapa användare</button>}
             { token? null : <button className="playGame__buttonGame" onClick={ ShowQuizes }>Visa alla Quiz</button>}
             <p className="playGame__erroMessage">{ errorMessage }</p>
-            {token? <button className="playGame__button" ref={ buttonRemoveMarker }>Ta bort blå markör</button> : ''}
+            {token? <button className="playGame__button" ref={ buttonRemoveMarker }>Ta bort blå markör/ ändra plats tillfråga</button> : ''}
 
             {toggelQuizButton? <article className='playGame__quizElem'>{ QuizElem }</article> : ''}
 

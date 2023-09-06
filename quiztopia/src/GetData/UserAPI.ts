@@ -1,6 +1,6 @@
 import { DataResponseCreateAccount, DataResponseLoggedIn } from "../interface"
 
-const createAccount = async( username:string, password: string)=>{
+const createAccount = async( username:string, password: string) => {
     const url =  'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/auth/signup'
     const setings =  {
         method:'POST',
@@ -13,10 +13,7 @@ const createAccount = async( username:string, password: string)=>{
     console.log(data)
 }
 
-const LogInExisitingAccont = async(username:string, password:string)=>{
-    console.log(username, 'username')
-    console.log(password, 'password')
-    
+const LogInExisitingAccont = async(username:string, password:string) => {
 
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/auth/login' 
     const setings =  {
