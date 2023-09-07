@@ -1,5 +1,5 @@
 
-import { ResponseCreateQuiz, SaveResponseQuizes, ResponseGetQuizes, QuestionsResponse,SetMessageQuizErrors, SetUserQuiz, SetStateQuestionMessage } from "../interface"
+import { ResponseCreateQuiz, SaveResponseQuizes, ResponseGetQuizes, QuestionsResponse,SetMessageQuizErrors, SetUserQuiz, SetStateQuestionMessage, Pname } from "../interface"
 
 const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErrors  ) => {
 
@@ -15,10 +15,10 @@ const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErr
     const data:ResponseCreateQuiz = await response.json()
     console.log('Create quiz', data)
 
-    // if(data.success === false){
-    // console.log('kunde inte skapa quiz API')
-    //  setMessageQuizError('Kunde inte skapa Quiz!!') 
-    // }
+     if(data.success === false){
+     console.log('kunde inte skapa quiz API')
+      setMessageQuizError('Kunde inte skapa Quiz!!') 
+     }
 }
 
 const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
@@ -35,7 +35,6 @@ const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
     if(data.quizzes){
         setGetQuiz(data.quizzes)
     }
-    //fixa felhantering
    
 }
 
@@ -94,8 +93,10 @@ const deleteQuiz = async( quizId: string ) => {
     console.log(data)
 }
 
-const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz ) => {
 
+const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz, name:Pname ) => {
+     console.log(name.name)
+   
     try{ 
         const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
         const setings = {
@@ -107,7 +108,8 @@ const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz ) => {
         const data: ResponseGetQuizes = await response.json()
         console.log('Get quizzes', data);
         
-        const username =  localStorage.getItem('name')
+        const username = name.name
+        console.log(username)
             if(data.quizzes && data.quizzes.length > 0 ){
             const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
             console.log('Get quizzes filtered', userQuizes);

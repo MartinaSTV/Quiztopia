@@ -13,7 +13,7 @@ const CreateUser = ()=>{
     const navigateToLogIn = ()=>{
         navigate('/LogIn')
     }
-    const makeAccount = async()=>{
+    const makeAccount = async() => {
         try{
             await createAccount(username, password)
             setMessage('Konto skapat gå till Logga in')

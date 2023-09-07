@@ -77,3 +77,6 @@ export type SetStateQuestionMessage =  React.Dispatch<React.SetStateAction<strin
 export interface PropsName{
     name:string
 }
+export interface Pname{
+    name:string
+}

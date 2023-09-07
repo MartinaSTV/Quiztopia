@@ -4,8 +4,9 @@ import PlayGame from '../../Views/PlayGame'
 import UserQuizes from '../UserQuiz/UserQuizez'
 import './Quizez.scss'
 import { QuizesResponse } from '../../interface'
+import { Pname } from '../../interface'
 
-const Quizez = ()=>{
+const Quizez = ( name: Pname )=>{
 
     const [quizName, setQuizName] = useState<string>('');
     const[ quizQuestion , setQuizQuestion ] = useState<string>('');
@@ -50,10 +51,10 @@ const Quizez = ()=>{
     }
 
     const showYourQuizes = async() => {
-        getQuizesAgainTest( setUserQuizes );
+        getQuizesAgainTest( setUserQuizes, name );
         setToggelQuestionButton(!toggelQustionButton);
     } 
-    const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index }  /> )
+    const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index } /> )
 
     return(
         <section className='quizez'>

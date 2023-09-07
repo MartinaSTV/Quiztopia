@@ -5,7 +5,7 @@ import { PropsUserQuiz } from "../../interface"
 
 // skicka hit quizname till quizId
 
-const UserQuizes = ({quiz}: PropsUserQuiz ) => {
+const UserQuizes = ({quiz }: PropsUserQuiz ) => {
 
    /*  console.log('quizi userquises', quiz.quizId)
     console.log(' quiz name från quizez' ,quizName) */

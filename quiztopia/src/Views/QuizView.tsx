@@ -12,7 +12,7 @@ const QuizView = ()=>{
         return(
           <section>
                 {token === null? <p>Du måste logga in</p> : <article><LoggedIn name = { name }/></article>}
-               { token === null ? '' : <article><Quizez/></article>}
+               { token === null ? '' : <article><Quizez name = { name }/></article>}
           </section>
     )
 }
