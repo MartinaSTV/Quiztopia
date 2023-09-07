@@ -59,7 +59,6 @@ export interface QuestionsResponseLocation{
 }
 export interface PropsUserQuiz{
     quiz: QuizesResponse
-    quizName
 }
 export interface PropsSetlingSetlat{
     setlngToQuestion: React.Dispatch<React.SetStateAction<number>>
@@ -75,3 +74,6 @@ export type SetMessageQuizErrors = React.Dispatch<React.SetStateAction<string>>
 export type SetUserQuiz =  React.Dispatch<React.SetStateAction<QuizesResponse[] | []>>
 
 export type SetStateQuestionMessage =  React.Dispatch<React.SetStateAction<string>>
+export interface PropsName{
+    name:string
+}

@@ -3,13 +3,11 @@ import { LogInExisitingAccont } from '../GetData/UserAPI'
 import { useNavigate } from 'react-router-dom';
 import './LogIn.scss'
 
-const LogIn = ()=>{
+const LogIn = (  )=>{
 
     const [username, setUsername]= useState<string>('');
     const [password, setpassword]= useState<string>('');
     const [message, setMessage]= useState<string>('')
-
-    localStorage.setItem('name',username)
 
     const navigate = useNavigate()
 
@@ -22,7 +20,7 @@ const LogIn = ()=>{
     }
     const token: string = (localStorage.getItem('token') || '')
     if( !token ){  setMessage('Kunde inte logga in'); }
-    else{ navigate('/CreateQuiz');
+    else{ navigate('/CreateQuiz', { state: {username: username}});
     }
    }
 

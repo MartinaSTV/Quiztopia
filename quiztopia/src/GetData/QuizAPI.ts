@@ -14,13 +14,11 @@ const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErr
     const response = await fetch(url, setings )
     const data:ResponseCreateQuiz = await response.json()
     console.log('Create quiz', data)
-    localStorage.setItem('quizId',(data.quizId) || '')
-   
-    if(data.success === false){
-    console.log('kunde inte skapa quiz API')
-     setMessageQuizError('Kunde inte skapa Quiz!!') 
-    }
-  
+
+    // if(data.success === false){
+    // console.log('kunde inte skapa quiz API')
+    //  setMessageQuizError('Kunde inte skapa Quiz!!') 
+    // }
 }
 
 const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
@@ -46,9 +44,6 @@ const AddQuestionOnQuiz = async(quizName: string, quizQuestion:string, quizAnswe
     const longitude = lon.toString()
     const latitude = lat.toString()
     console.log(lat, lon, 'api')
-    //const quizId = localStorage.getItem('quizId')
-    //console.log(quizId)
-    // localstorage är inte synkad
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/question' 
 
@@ -80,8 +75,11 @@ const AddQuestionOnQuiz = async(quizName: string, quizQuestion:string, quizAnswe
     if(question?.location.latitude === '0' ){ setQuizQuestionMessage(' OBS, Inga kordinater tillaggda till fråga!')}
 }
 
-// quizName == quizId
+
 const deleteQuiz = async( quizId: string ) => {
+    console.log(quizId, 'finns det mellanslag')
+    quizId = quizId.trim()
+    
 
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     const url  = `https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/${quizId}`

@@ -17,7 +17,6 @@ const PlayGame = ({ setlngToQuestion, setlatToQuestion , click }: PropsSetlingSe
   
   const [quizesResponse, setGetQuiz] = useState<QuizesResponse[] | []>([])
   const [selectedQuestions, setSelectedQuestions] = useState<QuizResponseQuestions[]>([])
-  console.log(selectedQuestions)
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [toggelQuizButton , setToggelQuizbutton] = useState<boolean>(false)
   

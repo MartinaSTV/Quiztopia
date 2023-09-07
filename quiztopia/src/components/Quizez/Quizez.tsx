@@ -13,12 +13,11 @@ const Quizez = ()=>{
     const [toggelQustionButton ,setToggelQuestionButton] = useState<boolean>(false)
     const [hideQuizButton ,setQuizbutton] = useState<boolean>(true);
     const [messageQuizError, setMessageQuizError] = useState<string>('');
-    const [quizQuestionMessage , setQuizQuestionMessage ]= useState<string>('')
+    const [quizQuestionMessage , setQuizQuestionMessage ]= useState<string>('');
 
     //hämta cordinaterna från frågor ifrån "PlayGame"
     const [latToQuestion, setlatToQuestion] = useState<number>(0);
     const [lngToQuestion, setlngToQuestion] = useState<number>(0);
-    console.log(latToQuestion, lngToQuestion, 'korr till frågor');
 
     //hämta user quizes sorterade från apit
     const [ userQuizes, setUserQuizes] = useState<QuizesResponse[] | []>([]);
@@ -28,7 +27,8 @@ const Quizez = ()=>{
  
     const CreateQuizes = async() => {
         try{
-        await createQuiz(quizName, setMessageQuizError);
+
+        await createQuiz(quizName.trim(), setMessageQuizError);
         setQuizbutton(false);
 
         }catch(error){
@@ -39,7 +39,7 @@ const Quizez = ()=>{
 
     const CreateQuizQuestion = async() => {
         try{
-        await AddQuestionOnQuiz( quizName, quizQuestion, quizAnswear, lngToQuestion, latToQuestion, setQuizQuestionMessage );
+        await AddQuestionOnQuiz( quizName.trim(), quizQuestion, quizAnswear, lngToQuestion, latToQuestion, setQuizQuestionMessage );
         setQuizQuestion('');
         setQuizAnswear('');
         click = 0
@@ -53,7 +53,7 @@ const Quizez = ()=>{
         getQuizesAgainTest( setUserQuizes );
         setToggelQuestionButton(!toggelQustionButton);
     } 
-    const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index } quizName = { quizName }/> )
+    const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index }  /> )
 
     return(
         <section className='quizez'>

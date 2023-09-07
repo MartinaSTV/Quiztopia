@@ -5,9 +5,10 @@ import { PropsUserQuiz } from "../../interface"
 
 // skicka hit quizname till quizId
 
-const UserQuizes = ({quiz, quizName}: PropsUserQuiz ) => {
+const UserQuizes = ({quiz}: PropsUserQuiz ) => {
 
-    console.log('quizi userquises', quiz)
+   /*  console.log('quizi userquises', quiz.quizId)
+    console.log(' quiz name från quizez' ,quizName) */
 
     const [userQuizesDeleteMessage, setDeletedQuizMessage] = useState<string>('')
     const [showQuestionS, setShowQ] = useState<boolean>(false)
