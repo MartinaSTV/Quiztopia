@@ -13,7 +13,7 @@ const createQuiz = async(quizName:string, setMessageQuizError: SetMessageQuizErr
     }
     const response = await fetch(url, setings )
     const data:ResponseCreateQuiz = await response.json()
-    console.log(data)
+    console.log('Create quiz', data)
     localStorage.setItem('quizId',(data.quizId) || '')
    
     if(data.success === false){
@@ -41,19 +41,19 @@ const getQuizes =  async(  setGetQuiz: SaveResponseQuizes )=>{
    
 }
 
-
-const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:number, lat:number, setQuizQuestionMessage:SetStateQuestionMessage ) => {
+const AddQuestionOnQuiz = async(quizName: string, quizQuestion:string, quizAnswear: string , lon:number, lat:number, setQuizQuestionMessage:SetStateQuestionMessage ) => {
 
     const longitude = lon.toString()
     const latitude = lat.toString()
     console.log(lat, lon, 'api')
-    const quizId = localStorage.getItem('quizId')
-    console.log(quizId)
+    //const quizId = localStorage.getItem('quizId')
+    //console.log(quizId)
+    // localstorage är inte synkad
     const token: string = JSON.parse(localStorage.getItem('token') || '')
     const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz/question' 
 
     const InfoBody = {
-        name: quizId,
+        name: quizName,
         question: quizQuestion,
         answer: quizAnswear,
         location: {
@@ -69,7 +69,7 @@ const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:n
     }
     const response = await fetch(url, setings )
     const data: QuestionsResponse = await response.json()
-    console.log(data)
+    console.log('Adding question', InfoBody, data)
     localStorage.setItem('user',(data.quiz.Attributes.userId)) 
     
     if(data.success){  setQuizQuestionMessage( 'Fråga tillagd på quiz, du kan lägga till fler') }
@@ -80,6 +80,7 @@ const AddQuestionOnQuiz = async(quizQuestion:string, quizAnswear: string , lon:n
     if(question?.location.latitude === '0' ){ setQuizQuestionMessage(' OBS, Inga kordinater tillaggda till fråga!')}
 }
 
+// quizName == quizId
 const deleteQuiz = async( quizId: string ) => {
 
     const token: string = JSON.parse(localStorage.getItem('token') || '')
@@ -89,6 +90,7 @@ const deleteQuiz = async( quizId: string ) => {
         headers: { 'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`}
     }
+    console.log('deleting quiz', url, setings,)
     const response = await fetch(url, setings)
     const data = await response.json()
     console.log(data)
@@ -102,13 +104,16 @@ const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz ) => {
             method:'GET',
             headers: { 'Content-Type': 'application/json' },
         }
+        
         const response = await fetch(url, setings )
         const data: ResponseGetQuizes = await response.json()
-        console.log(data)
-    
-            const username =  localStorage.getItem('name')
+        console.log('Get quizzes', data);
+        
+        const username =  localStorage.getItem('name')
             if(data.quizzes && data.quizzes.length > 0 ){
             const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
+            console.log('Get quizzes filtered', userQuizes);
+
             setUserQuizes( userQuizes)
             } 
       }catch(error){

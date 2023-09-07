@@ -59,6 +59,7 @@ export interface QuestionsResponseLocation{
 }
 export interface PropsUserQuiz{
     quiz: QuizesResponse
+    quizName
 }
 export interface PropsSetlingSetlat{
     setlngToQuestion: React.Dispatch<React.SetStateAction<number>>

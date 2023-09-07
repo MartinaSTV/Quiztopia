@@ -26,7 +26,7 @@ const Quizez = ()=>{
     // skicka till MapBox i PlayGame
     let click = 0
  
-    const CreateQuizes = async()=>{
+    const CreateQuizes = async() => {
         try{
         await createQuiz(quizName, setMessageQuizError);
         setQuizbutton(false);
@@ -37,9 +37,9 @@ const Quizez = ()=>{
         }
     }
 
-    const CreateQuizQuestion = async()=>{
+    const CreateQuizQuestion = async() => {
         try{
-        await AddQuestionOnQuiz( quizQuestion, quizAnswear, lngToQuestion, latToQuestion, setQuizQuestionMessage );
+        await AddQuestionOnQuiz( quizName, quizQuestion, quizAnswear, lngToQuestion, latToQuestion, setQuizQuestionMessage );
         setQuizQuestion('');
         setQuizAnswear('');
         click = 0
@@ -49,11 +49,11 @@ const Quizez = ()=>{
         }
     }
 
-    const showYourQuizes = async()=>{
+    const showYourQuizes = async() => {
         getQuizesAgainTest( setUserQuizes );
         setToggelQuestionButton(!toggelQustionButton);
     } 
-    const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index }/> )
+    const UserQuizElem = userQuizes.map((quiz, index)=> <UserQuizes quiz = { quiz } key ={ index } quizName = { quizName }/> )
 
     return(
         <section className='quizez'>

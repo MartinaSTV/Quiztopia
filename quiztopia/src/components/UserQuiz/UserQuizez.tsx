@@ -3,15 +3,18 @@ import { useState } from 'react'
 import './UserQuiz.scss'
 import { PropsUserQuiz } from "../../interface"
 
-const UserQuizes = ({quiz}: PropsUserQuiz ) => {
+// skicka hit quizname till quizId
+
+const UserQuizes = ({quiz, quizName}: PropsUserQuiz ) => {
+
+    console.log('quizi userquises', quiz)
 
     const [userQuizesDeleteMessage, setDeletedQuizMessage] = useState<string>('')
     const [showQuestionS, setShowQ] = useState<boolean>(false)
 
     const deleteQuizez = async() => {
         await deleteQuiz(quiz.quizId)
-        setDeletedQuizMessage('Ditt quiz är borttaget')
-        setTimeout(10000, location.reload())
+
     }
     const showQuestions = () => {
         setShowQ(!showQuestionS)
