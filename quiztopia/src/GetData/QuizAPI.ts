@@ -95,7 +95,6 @@ const deleteQuiz = async( quizId: string ) => {
 
 
 const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz, name:Pname ) => {
-     console.log(name.name)
    
     try{ 
         const url = 'https://fk7zu3f4gj.execute-api.eu-north-1.amazonaws.com/quiz'
@@ -109,7 +108,7 @@ const getQuizesAgainTest = async( setUserQuizes: SetUserQuiz, name:Pname ) => {
         console.log('Get quizzes', data);
         
         const username = name.name
-        console.log(username)
+        
             if(data.quizzes && data.quizzes.length > 0 ){
             const userQuizes =  data.quizzes.filter((quiz) =>  quiz.username === username )
             console.log('Get quizzes filtered', userQuizes);
